@@ -421,6 +421,11 @@ static int send_rslms_dlsap(struct osmo_dlsap_prim *dp,
 		rll_msg = RSL_MT_EST_IND;
 		break;
 	case OSMO_PRIM(PRIM_DL_EST, PRIM_OP_CONFIRM):
+		if (dp->oph.msg && dp->oph.msg->len == 0) {
+			/* omit L3 info by freeing message */
+			msgb_free(dp->oph.msg);
+			dp->oph.msg = NULL;
+		}
 		rll_msg = RSL_MT_EST_CONF;
 		break;
 	case OSMO_PRIM(PRIM_DL_DATA, PRIM_OP_INDICATION):
@@ -429,9 +434,19 @@ static int send_rslms_dlsap(struct osmo_dlsap_prim *dp,
 	case OSMO_PRIM(PRIM_DL_UNIT_DATA, PRIM_OP_INDICATION):
 		return send_rslms_rll_l3_ui(mctx, dp->oph.msg);
 	case OSMO_PRIM(PRIM_DL_REL, PRIM_OP_INDICATION):
+		if (dp->oph.msg && dp->oph.msg->len == 0) {
+			/* omit L3 info by freeing message */
+			msgb_free(dp->oph.msg);
+			dp->oph.msg = NULL;
+		}
 		rll_msg = RSL_MT_REL_IND;
 		break;
 	case OSMO_PRIM(PRIM_DL_REL, PRIM_OP_CONFIRM):
+		if (dp->oph.msg && dp->oph.msg->len == 0) {
+			/* omit L3 info by freeing message */
+			msgb_free(dp->oph.msg);
+			dp->oph.msg = NULL;
+		}
 		rll_msg = RSL_MT_REL_CONF;
 		break;
 	case OSMO_PRIM(PRIM_DL_SUSP, PRIM_OP_CONFIRM):
